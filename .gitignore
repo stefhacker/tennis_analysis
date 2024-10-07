@@ -6,3 +6,4 @@ yolov5l6u.pt
 yolov8n.pt
 yolov8x.pt
 input_videos
+keypoints_model.pth
