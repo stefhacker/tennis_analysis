@@ -7,3 +7,4 @@ yolov8n.pt
 yolov8x.pt
 input_videos
 keypoints_model.pth
+output_videos/
