@@ -24,7 +24,7 @@ def main():
    
    court_model_path = 'models/keypoints_model.pth'
    court_line_detector = CourtLineDetector(court_model_path)
-   court_keypoints = court_line_detector.predict(video_frames[0])
+   court_keypoints = court_line_detector.predict_frames(video_frames)
 
    
 

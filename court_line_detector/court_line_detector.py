@@ -33,14 +33,18 @@ class CourtLineDetector:
         keypoints[::2] *= original_w/224.0
         keypoints[1::2] *= original_h/224.0
 
+
+
         return keypoints
     
      
     def predict_frames(self, frames):
         keypoints_detections = []
-        for frame in frames:
+        for i, frame in enumerate(frames):
             keypoints_dict = self.predict(frame)
             keypoints_detections.append(keypoints_dict)
+
+            print(f"Frame {i + 1}: Detected Keypoints: {keypoints_dict}")
         
         return keypoints_detections
 
@@ -54,9 +58,9 @@ class CourtLineDetector:
             cv2.circle(image,(x,y), 5, (0, 0, 255), -1) #5 pixels , -1 meaning its filled
         return image
 
-    def draw_keypoints_on_video(self, video_frames, keypoints):
+    def draw_keypoints_on_video(self, video_frames, keypoints_detections):
         output_video_frames = []
-        for frame in video_frames:
+        for frame, keypoints in zip(video_frames, keypoints_detections):
             frame = self.draw_keypoints(frame, keypoints)
             output_video_frames.append(frame)
         return output_video_frames
