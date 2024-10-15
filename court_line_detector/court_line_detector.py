@@ -2,6 +2,7 @@ import torch
 import torchvision.transforms as transforms
 import torchvision.models as models
 import cv2
+import pickle
 
 class CourtLineDetector:
     def __init__(self, model_path):
@@ -38,13 +39,25 @@ class CourtLineDetector:
         return keypoints
     
      
-    def predict_frames(self, frames):
+    def predict_frames(self, frames, read_from_stub=False, stub_path = None):
         keypoints_detections = []
+        
+        if read_from_stub and stub_path is not None:
+            with open(stub_path, 'rb') as f:
+                keypoints_detections = pickle.load(f)
+            return keypoints_detections
+        
+        
+        
         for i, frame in enumerate(frames):
             keypoints_dict = self.predict(frame)
             keypoints_detections.append(keypoints_dict)
 
             print(f"Frame {i + 1}: Detected Keypoints: {keypoints_dict}")
+        
+        if stub_path is not None:
+            with open(stub_path, "wb") as f:
+                pickle.dump(keypoints_detections, f) #saves data in pickle format, this transforms list to binary
         
         return keypoints_detections
 

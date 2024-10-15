@@ -1,10 +1,24 @@
 from ultralytics import YOLO
 import cv2
 import pickle
+import pandas as pd
+
 
 class BallTracker:
     def __init__(self, model_path):
         self.model = YOLO(model_path)
+    
+    def interpolate_ball_positions(self, ball_positions):
+        ball_positions = [x.get(1, []) for x in ball_positions]
+        df_ball_postions = pd.DataFrame(ball_positions, columns= ['x1','y1','x2','y2'])
+
+        df_ball_postions = df_ball_postions.interpolate()
+        df_ball_postions = df_ball_postions.bfill()
+
+        ball_positions = [{1:x} for x in df_ball_postions.to_numpy().tolist()]
+
+        return ball_positions
+
     
     def detect_frames(self, frames, read_from_stub=False, stub_path = None):
         ball_detections = []
@@ -47,6 +61,9 @@ class BallTracker:
             output_video_frames.append(frame)
 
         return(output_video_frames)
+    
+
+
 
 
 
