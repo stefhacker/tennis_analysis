@@ -1,8 +1,12 @@
 from utils import (read_video,
-                   save_video)
+                   save_video,
+                   get_closest_keypoints_to_edges,
+                   get_image_width_height)
 from trackers import PlayerTracker, BallTracker
 from court_line_detector import CourtLineDetector
 import cv2
+import numpy as np
+
 
 def main():
    # read video
@@ -30,6 +34,9 @@ def main():
    court_keypoints = court_line_detector.predict_frames(video_frames, 
                                                         read_from_stub=True,
                                                         stub_path= "tracker_stubs/keypoints_detections.pkl")
+   
+   #choose players
+   player_detections = player_tracker.choose_and_filter_players(court_keypoints, player_detections)
 
    
 
@@ -39,11 +46,15 @@ def main():
 
    # Draw court keypoints
    output_video_frames = court_line_detector.draw_keypoints_on_video(output_video_frames, court_keypoints)
+  
    
    for i, frame in enumerate(video_frames):
       cv2.putText(frame,  f"Frame:{i}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX,  0.8,  (0, 255, 0),  2)
    
-
+   width, height = get_image_width_height(video_frames[0])
+   outside_points = get_closest_keypoints_to_edges(court_keypoints, width, height)
+   print(outside_points)
+   
 
    
 
